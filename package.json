@@ -1,1 +1,30 @@
-{"name":"jarvis-desktop","version":"0.1.0","private":true,"description":"JARVIS assistant for macOS","main":"app/main.cjs","scripts":{"start":"electron .","check":"node --check app/main.cjs && node --check app/preload.cjs && node --check app/renderer.js","test":"node --test app/commands.test.cjs","dist:mac":"electron-builder --mac dmg"},"devDependencies":{"electron":"^39.0.0","electron-builder":"^26.0.12"},"build":{"appId":"com.jarvis.assistant","productName":"JARVIS","files":["app/**/*"],"mac":{"category":"public.app-category.productivity","extendInfo":{"NSMicrophoneUsageDescription":"JARVIS uses your microphone for voice commands."}}}}
+{
+  "name": "jarvis-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "JARVIS assistant for macOS",
+  "main": "app/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check app/main.cjs && node --check app/preload.cjs && node --check app/renderer.js && node --check app/gemini.cjs",
+    "test": "node --test app/*.test.cjs",
+    "dist:mac": "electron-builder --mac dmg"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.jarvis.assistant",
+    "productName": "JARVIS",
+    "files": [
+      "app/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "JARVIS uses your microphone for voice commands."
+      }
+    }
+  }
+}

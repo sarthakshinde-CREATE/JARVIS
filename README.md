@@ -34,3 +34,17 @@ npm run dist:mac
 ```
 
 Build the DMG on your Mac. Signing and notarization require your Apple Developer credentials and are not configured. An unsigned local development build may require explicit permission in macOS. No macOS build or native permissions have been validated in the Linux cloud workspace.
+
+## Gemini conversation
+
+Create an API key at https://aistudio.google.com/apikey. In macOS Terminal (zsh), stop the app, then:
+
+```sh
+read -s "GEMINI_API_KEY?Paste your Gemini API key: "
+export GEMINI_API_KEY
+npm start
+```
+
+Ordinary messages go to Gemini; explicit browser/search/timer commands remain local. Messages and up to ten successful conversation exchanges are sent to Google for context. History stays in memory and resets when the app exits. Keys remain in the main process and are never exposed to the page. The default model is `gemini-2.5-flash`; set `GEMINI_MODEL` to another supported model ID if required by your account. API availability, quotas, and billing depend on your account. Errors are displayed in the conversation. Fish Audio is independently required for speech; a voice error does not remove Gemini's written answer. Never paste keys into the chat input or commit them.
+
+Gemini request formatting, history, and error handling are tested using mocked responses. A live API response requires your configured key and has not been verified in the cloud workspace.
