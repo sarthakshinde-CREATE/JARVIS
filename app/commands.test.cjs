@@ -1,0 +1,3 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {parseCommand}=require('./commands.cjs');
+test('timer units and bounds',()=>{assert.deepEqual(parseCommand('set a timer for 5 minutes'),{type:'alarm',seconds:300});assert.equal(parseCommand('timer 0 seconds').type,'unknown');assert.equal(parseCommand('timer 999 hours').type,'unknown');});
+test('browser destinations and search encoding',()=>{assert.equal(parseCommand('open youtube.com').url,'https://youtube.com/');assert.equal(parseCommand('search for cats & dogs').url,'https://www.google.com/search?q=cats%20%26%20dogs');assert.equal(parseCommand('open file:///etc/passwd').type,'unknown');assert.equal(parseCommand('open https://user:pass@example.com').type,'unknown');});
