@@ -6,7 +6,7 @@
   "main": "app/main.cjs",
   "scripts": {
     "start": "electron .",
-    "check": "node --check app/main.cjs && node --check app/preload.cjs && node --check app/renderer.js && node --check app/gemini.cjs",
+    "check": "node --check app/main.cjs && node --check app/preload.cjs && node --check app/renderer.js && node --check app/gemini.cjs && node --check app/ollama.cjs",
     "test": "node --test app/*.test.cjs",
     "dist:mac": "electron-builder --mac dmg"
   },

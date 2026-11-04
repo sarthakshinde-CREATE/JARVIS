@@ -48,3 +48,14 @@ npm start
 Ordinary messages go to Gemini; explicit browser/search/timer commands remain local. Messages and up to ten successful conversation exchanges are sent to Google for context. History stays in memory and resets when the app exits. Keys remain in the main process and are never exposed to the page. The default model is `gemini-2.5-flash`; set `GEMINI_MODEL` to another supported model ID if required by your account. API availability, quotas, and billing depend on your account. Errors are displayed in the conversation. Fish Audio is independently required for speech; a voice error does not remove Gemini's written answer. Never paste keys into the chat input or commit them.
 
 Gemini request formatting, history, and error handling are tested using mocked responses. A live API response requires your configured key and has not been verified in the cloud workspace.
+
+## Local conversation with Ollama (default)
+
+1. Install Ollama for macOS from https://ollama.com/download/mac and open it. Follow its command-line installation prompt. Keep the app running.
+2. In a new Terminal window, run `ollama pull qwen3:4b`. This downloads several GB. Start with `qwen3:1.7b` instead on a memory-constrained Mac and set `export OLLAMA_MODEL=qwen3:1.7b` in the Terminal used to launch JARVIS.
+3. Verify the model with `ollama run qwen3:4b "Say hello in one sentence."` (substitute your selected model).
+4. From the project directory, run `npm start`. No Gemini key is needed. The first reply can take time while loading the model; requests time out after three minutes.
+
+The Ollama app must run on the same Mac as JARVIS, listening on its default local port 11434. No exposed network port is required. JARVIS uses only the local `/api/chat` endpoint, retaining six exchanges in memory. Model response speed and quality depend on available memory and hardware. Local chat sends no prompts to Gemini. Fish Audio still sends response text to its cloud service for speech and requires its own valid key. To return to Gemini, set `export JARVIS_AI_PROVIDER=gemini` and supply `GEMINI_API_KEY` before launching.
+
+Ollama integration is covered by mocked HTTP tests; live model execution must be verified on your Mac.

@@ -2,7 +2,7 @@ const {app,BrowserWindow,ipcMain,shell,Notification,Tray,Menu,nativeImage,powerM
 const fs=require('node:fs');
 const path=require('node:path');
 const {parseCommand}=require('./commands.cjs');
-const conversation=require('./gemini.cjs').createConversation();
+const conversation=require(process.env.JARVIS_AI_PROVIDER==='gemini'?'./gemini.cjs':'./ollama.cjs').createConversation();
 let win,tray,alarms=[],timer;
 const alarmFile=()=>path.join(app.getPath('userData'),'alarms.json');
 function save(){fs.writeFileSync(alarmFile(),JSON.stringify(alarms));}
