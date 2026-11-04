@@ -1,3 +1,12 @@
+function cleanAnswer(content) {
+ if(typeof content!=='string')return '';
+ let answer=content.replace(/<think\b[^>]*>[\s\S]*?<\/think\s*>/gi,'');
+ // Some models omit the opening tag but still emit the closing delimiter.
+ const close=/<\/think\s*>/i.exec(answer);
+ if(close)answer=answer.slice(close.index+close[0].length);
+ answer=answer.replace(/<think\b[^>]*>[\s\S]*$/gi,'');
+ return answer.trim();
+}
 function createConversation({fetchImpl=globalThis.fetch,env=process.env}={}) {
  let history=[];
  return async function reply(text) {
@@ -15,11 +24,11 @@ function createConversation({fetchImpl=globalThis.fetch,env=process.env}={}) {
   }
   if(!response.ok){if(response.status===404)throw Error(`Ollama model not found. Run: ollama pull ${model}`);throw Error(`Ollama returned HTTP ${response.status}. Check that the model can run on your Mac.`);}
   const data=await response.json();
-  const answer=data.message?.content?.trim();
+  const answer=cleanAnswer(data.message?.content);
   if(!answer)throw Error('Ollama returned no answer. Try again or select another model.');
   const bounded=answer.length>1900?answer.slice(0,1899)+'…':answer;
   history=[...history,{role:'user',content:text},{role:'assistant',content:bounded}].slice(-12);
   return bounded;
  };
 }
-module.exports={createConversation};
+module.exports={createConversation,cleanAnswer};

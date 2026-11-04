@@ -1,3 +1,12 @@
 const {test}=require('node:test');const assert=require('node:assert/strict');const {createConversation}=require('./ollama.cjs');
 test('Ollama uses localhost, nonstreaming chat and session context',async()=>{const calls=[];const reply=createConversation({env:{},fetchImpl:async(url,options)=>{calls.push({url,body:JSON.parse(options.body)});return {ok:true,json:async()=>({message:{content:'At your service.'}})};}});assert.equal(await reply('hi'),'At your service.');await reply('what did I say?');assert.equal(calls[0].url,'http://127.0.0.1:11434/api/chat');assert.equal(calls[0].body.stream,false);assert.equal(calls[0].body.think,false);assert.equal(calls[0].body.model,'qwen3:4b');assert.equal(calls[1].body.messages.length,4);});
 test('Ollama connection, missing model and empty reply failures are useful',async()=>{for(const [fetchImpl,pattern] of [[async()=>{throw Error('connection refused')},/Open the Ollama app/],[async()=>({ok:false,status:404}),/ollama pull/],[async()=>({ok:true,json:async()=>({message:{content:''}})}),/no answer/]]){await assert.rejects(createConversation({env:{},fetchImpl})('hi'),pattern);}});
+test('Only the final answer is displayed and retained in history',async()=>{
+ const {cleanAnswer}=require('./ollama.cjs');
+ assert.equal(cleanAnswer('<think>private notes</think>Hello!'),'Hello!');
+ assert.equal(cleanAnswer('private notes</think>Hello!'),'Hello!');
+ assert.equal(cleanAnswer('<think>unfinished notes'),'');
+ assert.equal(cleanAnswer('Plain answer'),'Plain answer');
+ const calls=[];const reply=createConversation({env:{},fetchImpl:async(_url,options)=>{calls.push(JSON.parse(options.body));return {ok:true,json:async()=>({message:{content:'<think>notes</think>Hello!'}})};}});
+ assert.equal(await reply('hi'),'Hello!');await reply('again');assert.equal(calls[1].messages[2].content,'Hello!');
+});
